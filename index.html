@@ -1,0 +1,651 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday, Swara!</title>
+
+  <!-- Handwritten + Serif fonts — no Inter/Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       PAPER CONFETTI CONTAINER (injected by JS after candles out)
+       ============================================================ -->
+  <div id="confetti-wrap" aria-hidden="true"></div>
+
+  <!-- Birthday song -- plays when all candles are blown out, stops on Relight -->
+  <audio id="birthday-song" src="audio/birthday-song.mp3" loop preload="auto" aria-hidden="true"></audio>
+
+  <!-- ============================================================
+       CINEMATIC PROJECTOR EXPERIENCE (Plays after candles blown out)
+       ============================================================ -->
+  <div id="cinematic-overlay" class="cinematic-overlay" hidden aria-hidden="true" role="dialog" aria-label="Birthday movie screening">
+    
+    <!-- Warm floating dust motes in projector light -->
+    <div class="projector-dust" aria-hidden="true">
+      <span class="dust-mote" style="--d-x:18%;--d-y:68%;--d-s:3.5px;--d-dur:6.5s;--d-delay:0.2s;"></span>
+      <span class="dust-mote" style="--d-x:26%;--d-y:58%;--d-s:4px;--d-dur:7.5s;--d-delay:1.2s;"></span>
+      <span class="dust-mote" style="--d-x:34%;--d-y:48%;--d-s:3px;--d-dur:8s;--d-delay:0.5s;"></span>
+      <span class="dust-mote" style="--d-x:44%;--d-y:40%;--d-s:4.5px;--d-dur:7s;--d-delay:2s;"></span>
+      <span class="dust-mote" style="--d-x:22%;--d-y:72%;--d-s:2.5px;--d-dur:5.8s;--d-delay:1.8s;"></span>
+      <span class="dust-mote" style="--d-x:38%;--d-y:52%;--d-s:3.8px;--d-dur:6.2s;--d-delay:2.6s;"></span>
+      <span class="dust-mote" style="--d-x:52%;--d-y:36%;--d-s:3px;--d-dur:8.4s;--d-delay:0.8s;"></span>
+      <span class="dust-mote" style="--d-x:30%;--d-y:62%;--d-s:4.2px;--d-dur:7.2s;--d-delay:1.5s;"></span>
+    </div>
+
+    <!-- Soft triangular light beam from projector to screen -->
+    <svg class="projector-beam-svg" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="projectorBeamGrad" x1="120" y1="880" x2="500" y2="480" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#fff9ea" stop-opacity="0.55" />
+          <stop offset="22%" stop-color="#ffe7a5" stop-opacity="0.30" />
+          <stop offset="65%" stop-color="#f5d075" stop-opacity="0.12" />
+          <stop offset="100%" stop-color="#e8a020" stop-opacity="0.02" />
+        </linearGradient>
+        <filter id="beamBlur" x="-10%" y="-10%" width="120%" height="120%">
+          <feGaussianBlur stdDeviation="8" />
+        </filter>
+      </defs>
+      <polygon points="120,880 180,200 820,200 820,760 180,760" fill="url(#projectorBeamGrad)" filter="url(#beamBlur)" />
+    </svg>
+
+    <!-- Central Projected Screen -->
+    <div class="projection-screen-wrap">
+      <div class="projection-screen">
+        <div class="screen-tape" aria-hidden="true"></div>
+        <div class="screen-frame">
+          <video id="projector-video" class="projector-video" src="videos/birthday-edit.mp4" autoplay muted playsinline preload="auto"></video>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vintage film projector illustration at bottom-left -->
+    <div class="projector-unit" aria-hidden="true">
+      <svg class="projector-svg" viewBox="0 0 170 150" width="170" height="150">
+        <!-- Tripod stand -->
+        <line x1="85" y1="115" x2="42" y2="146" stroke="#4a2e1b" stroke-width="4.5" stroke-linecap="round"/>
+        <line x1="85" y1="115" x2="85" y2="148" stroke="#3d241a" stroke-width="4.5" stroke-linecap="round"/>
+        <line x1="85" y1="115" x2="128" y2="146" stroke="#4a2e1b" stroke-width="4.5" stroke-linecap="round"/>
+        <line x1="56" y1="134" x2="114" y2="134" stroke="#5a3826" stroke-width="2" stroke-linecap="round"/>
+
+        <!-- Projector main body -->
+        <rect x="50" y="68" width="70" height="48" rx="6" fill="#2d1a12" stroke="#8a6248" stroke-width="2.5"/>
+        <line x1="58" y1="76" x2="78" y2="76" stroke="#5a3826" stroke-width="2" stroke-linecap="round"/>
+        <line x1="58" y1="82" x2="78" y2="82" stroke="#5a3826" stroke-width="2" stroke-linecap="round"/>
+        <line x1="58" y1="88" x2="78" y2="88" stroke="#5a3826" stroke-width="2" stroke-linecap="round"/>
+        
+        <!-- Controls & dials -->
+        <circle cx="102" cy="80" r="5" fill="#e8a020" stroke="#d4a830" stroke-width="1.5"/>
+        <circle cx="102" cy="96" r="5" fill="#c0392b" stroke="#a02820" stroke-width="1.5"/>
+        <line x1="102" y1="77" x2="102" y2="83" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+
+        <!-- Projector lens pointing up-right towards center -->
+        <polygon points="120,76 148,70 148,102 120,96" fill="#1f120c" stroke="#8a6248" stroke-width="2.5"/>
+        <ellipse cx="148" cy="86" rx="4" ry="16" fill="#e8a020" class="projector-lens-core"/>
+        <ellipse cx="148" cy="86" rx="2" ry="10" fill="#fffdf4" opacity="0.9"/>
+
+        <!-- Film strip between reels -->
+        <path d="M52,42 C70,55 78,58 98,36" stroke="#1f120c" stroke-width="3" fill="none" stroke-dasharray="2 2"/>
+
+        <!-- Front/left spinning film reel -->
+        <g class="projector-reel projector-reel--left">
+          <circle cx="52" cy="42" r="23" fill="rgba(30,20,15,0.7)" stroke="#d4a830" stroke-width="3"/>
+          <circle cx="52" cy="42" r="8" fill="#5a3826" stroke="#d4a830" stroke-width="2"/>
+          <line x1="52" y1="19" x2="52" y2="65" stroke="#d4a830" stroke-width="2"/>
+          <line x1="29" y1="42" x2="75" y2="42" stroke="#d4a830" stroke-width="2"/>
+          <line x1="36" y1="26" x2="68" y2="58" stroke="#d4a830" stroke-width="1.5"/>
+          <line x1="36" y1="58" x2="68" y2="26" stroke="#d4a830" stroke-width="1.5"/>
+          <circle cx="52" cy="27" r="2.5" fill="#1f120c"/>
+          <circle cx="52" cy="57" r="2.5" fill="#1f120c"/>
+          <circle cx="37" cy="42" r="2.5" fill="#1f120c"/>
+          <circle cx="67" cy="42" r="2.5" fill="#1f120c"/>
+        </g>
+
+        <!-- Back/right spinning film reel -->
+        <g class="projector-reel projector-reel--right">
+          <circle cx="98" cy="36" r="25" fill="rgba(30,20,15,0.7)" stroke="#e8a020" stroke-width="3"/>
+          <circle cx="98" cy="36" r="8" fill="#5a3826" stroke="#e8a020" stroke-width="2"/>
+          <line x1="98" y1="11" x2="98" y2="61" stroke="#e8a020" stroke-width="2"/>
+          <line x1="73" y1="36" x2="123" y2="36" stroke="#e8a020" stroke-width="2"/>
+          <line x1="80" y1="18" x2="116" y2="54" stroke="#e8a020" stroke-width="1.5"/>
+          <line x1="80" y1="54" x2="116" y2="18" stroke="#e8a020" stroke-width="1.5"/>
+          <circle cx="98" cy="21" r="2.5" fill="#1f120c"/>
+          <circle cx="98" cy="51" r="2.5" fill="#1f120c"/>
+          <circle cx="83" cy="36" r="2.5" fill="#1f120c"/>
+          <circle cx="113" cy="36" r="2.5" fill="#1f120c"/>
+        </g>
+      </svg>
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       FLOATING BALLOONS & BURST CONTAINERS (Paper-craft style)
+       ============================================================ -->
+  <div id="balloon-container" aria-hidden="true"></div>
+  <div id="burst-container" aria-hidden="true"></div>
+
+  <!-- Small handwritten balloon hint (fades after first pop) -->
+  <div id="balloon-hint" class="balloon-hint" role="status">
+    <span class="balloon-hint-text">pop the balloons!</span>
+    <svg class="balloon-hint-arrow" viewBox="0 0 50 35" aria-hidden="true">
+      <path d="M6,26 Q20,30 36,12" stroke="#c0392b" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M26,12 L38,10 L39,22" stroke="#c0392b" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <!-- Hand-drawn popped counter & sound mute button -->
+  <div id="balloon-hud" class="balloon-hud" aria-label="Balloon popping counter">
+    <div class="hud-tag">
+      <div class="hud-washi" aria-hidden="true"></div>
+      <span class="hud-text" id="hud-count">popped: 0</span>
+      <button id="sound-toggle-btn" class="hud-sound-btn" aria-label="Toggle pop sound" title="Sound: On">
+        <span id="sound-icon" aria-hidden="true">🔊</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Sticky note after 20 pops -->
+  <div id="balloon-win-note" class="sticky-win-note" hidden role="dialog" aria-modal="true" aria-label="Balloon milestone">
+    <div class="sticky-tape" aria-hidden="true"></div>
+    <p class="sticky-heading">BASSSS KAARRRR BUNAAAAAAAA, 🎈</p>
+    <p class="sticky-body">Kitna fugga fodegi . 10 fugga fod chuki </p>
+    <button id="sticky-close-btn" class="hand-btn hand-btn--secondary sticky-btn">✓ chal ab card padh</button>
+  </div>
+
+  <!-- ============================================================
+       1. HEADER — Handwritten title + doodle underline + polaroid
+       ============================================================ -->
+  <header class="page-header">
+
+    <!-- Washi tape strip decorating the top -->
+    <div class="washi washi-top" aria-hidden="true"></div>
+
+    <!-- Hand-drawn corner doodle (SVG) -->
+    <svg class="corner-doodle corner-doodle--tl" viewBox="0 0 80 80" aria-hidden="true">
+      <path d="M5,70 Q10,30 60,10" stroke="#c0392b" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <circle cx="62" cy="9" r="3" fill="#c0392b"/>
+      <path d="M20,55 Q25,45 35,48" stroke="#c0392b" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    </svg>
+    <svg class="corner-doodle corner-doodle--tr" viewBox="0 0 80 80" aria-hidden="true">
+      <path d="M75,70 Q70,30 20,10" stroke="#e8a020" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M18,8 l4,4 m-4,0 l4,-4" stroke="#e8a020" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="55" cy="55" r="2.5" fill="#e8a020"/>
+    </svg>
+
+    <div class="header-inner">
+      <!-- Polaroid photo -->
+      <div class="polaroid polaroid--hero" style="--rot: -2.5deg">
+        <div class="polaroid__tape" aria-hidden="true"></div>
+        <div class="polaroid__img-wrap">
+          <img src="photoMe.jpg" alt="Swara — birthday girl!" class="polaroid__img">
+        </div>
+        <p class="polaroid__caption">the birthday girl ✦</p>
+      </div>
+
+      <!-- Title block -->
+      <div class="header-title-block">
+        <p class="header-eyebrow">hey, it's finally —</p>
+        <h1 class="main-heading">
+          Happy Birthday,<br>
+          <span class="name-highlight">Swara</span>
+          <!-- SVG underline that draws itself in -->
+          <svg class="doodle-underline" viewBox="0 0 320 24" preserveAspectRatio="none" aria-hidden="true">
+            <path id="underline-path"
+              d="M4,16 C60,6 130,22 200,12 C250,5 290,18 316,10"
+              stroke="#c0392b" stroke-width="3.5" fill="none"
+              stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </h1>
+
+        <!-- Small hand-drawn squiggle accent -->
+        <svg class="squiggle-accent" viewBox="0 0 120 20" aria-hidden="true">
+          <path d="M2,10 Q15,2 28,10 Q41,18 54,10 Q67,2 80,10 Q93,18 106,10 Q113,6 118,10"
+            stroke="#e8a020" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+
+        <!-- Doodle star that wiggles -->
+        <svg class="wiggle-star" viewBox="0 0 40 40" aria-hidden="true" role="img">
+          <polygon points="20,2 24,15 38,15 27,23 31,37 20,29 9,37 13,23 2,15 16,15"
+            fill="#e8a020" stroke="#c07010" stroke-width="1"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Torn paper bottom edge -->
+    <div class="torn-edge torn-edge--bottom" aria-hidden="true">
+      <svg viewBox="0 0 1440 40" preserveAspectRatio="none">
+        <path d="M0,0 L0,20 Q30,36 60,18 Q90,2 120,22 Q150,38 180,16 Q210,0 240,24 Q270,40 300,18 Q330,4 360,22 Q390,36 420,14 Q450,0 480,20 Q510,38 540,16 Q570,2 600,24 Q630,40 660,18 Q690,4 720,22 Q750,38 780,14 Q810,0 840,20 Q870,38 900,16 Q930,2 960,24 Q990,40 1020,18 Q1050,4 1080,22 Q1110,38 1140,14 Q1170,0 1200,20 Q1230,38 1260,16 Q1290,2 1320,24 Q1350,40 1380,18 Q1410,4 1440,22 L1440,0 Z"
+          fill="#f6efe3"/>
+      </svg>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       MAIN CONTENT
+       ============================================================ -->
+  <main class="page-main">
+
+    <!-- ============================================================
+         2. GIFT ENVELOPES — 4 paper envelopes, tap to open
+         ============================================================ -->
+    <section class="gifts-section" aria-label="Birthday gifts">
+      <div class="section-label">
+        <svg viewBox="0 0 60 20" aria-hidden="true">
+          <path d="M2,10 Q15,2 28,15 Q41,4 54,12" stroke="#c0392b" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span>a few little things for you</span>
+        <svg viewBox="0 0 60 20" aria-hidden="true">
+          <path d="M6,8 Q19,18 32,5 Q45,16 58,10" stroke="#c0392b" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <div class="gifts-grid">
+
+        <!-- GIFT 1 -->
+        <article class="envelope-card" data-open="false" aria-label="Gift 1">
+          <!-- Closed state -->
+          <div class="env-closed">
+            <div class="env-flap" aria-hidden="true"></div>
+            <div class="env-body">
+              <div class="env-label">
+                <span class="env-num">01</span>
+                <span class="env-hint">tap to open →</span>
+              </div>
+              <div class="env-washi" aria-hidden="true"></div>
+            </div>
+          </div>
+          <!-- Open state: note card -->
+          <div class="env-note" aria-hidden="true">
+            <div class="note-lines" aria-hidden="true"></div>
+            <p class="note-num">— 01 —</p>
+            <h3 class="note-heading">Here's What I Want You to Know</h3>
+            <p class="note-body">
+              <!-- PLACEHOLDER — replace with your own words -->
+              Babyyy you are my heart and I'll lovee youu forever I just want to make your day special in those stress full exam days if this make you feel a little happy then .KISSIE DEDOOOOOOOOOOOOOOOOO.
+            </p>
+            <button class="note-close" aria-label="Close gift 1">× close</button>
+          </div>
+          <!-- Doodle star on card -->
+          <svg class="env-doodle" viewBox="0 0 30 30" aria-hidden="true">
+            <polygon points="15,2 18,11 28,11 20,17 23,27 15,21 7,27 10,17 2,11 12,11" fill="none" stroke="#c0392b" stroke-width="1.5"/>
+          </svg>
+        </article>
+
+        <!-- GIFT 2 -->
+        <article class="envelope-card env-accent-2" data-open="false" aria-label="Gift 2">
+          <div class="env-closed">
+            <div class="env-flap" aria-hidden="true"></div>
+            <div class="env-body">
+              <div class="env-label">
+                <span class="env-num">02</span>
+                <span class="env-hint">tap to open →</span>
+              </div>
+              <div class="env-washi" aria-hidden="true"></div>
+            </div>
+          </div>
+          <div class="env-note" aria-hidden="true">
+            <div class="note-lines" aria-hidden="true"></div>
+            <p class="note-num">— 02 —</p>
+            <h3 class="note-heading">The Thing About Your Laugh</h3>
+            <p class="note-body">
+              <!-- PLACEHOLDER — replace with your own words -->
+              I lovee when so laugh like babyy your face becomes sooo adorable and cute that i cant stop wondering that you are mine i love your smile and laughs and I wish to see your laugh this whole year 
+            </p>
+            <button class="note-close" aria-label="Close gift 2">× close</button>
+          </div>
+          <svg class="env-doodle" viewBox="0 0 30 30" aria-hidden="true">
+            <path d="M5,15 Q10,5 15,15 Q20,25 25,15" stroke="#e8a020" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <circle cx="15" cy="8" r="2" fill="#e8a020"/>
+          </svg>
+        </article>
+
+        <!-- GIFT 3 -->
+        <article class="envelope-card env-accent-3" data-open="false" aria-label="Gift 3">
+          <div class="env-closed">
+            <div class="env-flap" aria-hidden="true"></div>
+            <div class="env-body">
+              <div class="env-label">
+                <span class="env-num">03</span>
+                <span class="env-hint">tap to open →</span>
+              </div>
+              <div class="env-washi" aria-hidden="true"></div>
+            </div>
+          </div>
+          <div class="env-note" aria-hidden="true">
+            <div class="note-lines" aria-hidden="true"></div>
+            <p class="note-num">— 03 —</p>
+            <h3 class="note-heading">The Hard Days</h3>
+            <p class="note-body">
+              <!-- PLACEHOLDER — replace with your own words -->
+              Babyyy im with you in every high and especially low days . thw days which are genuinely though and you cry my heart feels shattered when the drop of tear fall from your cute eyes and i know some times crying makes us feel good so babyy whenever you feel like crying cry in my arms so i can comfort you and we will togerther figure out the solution of problem 
+            </p>
+            <button class="note-close" aria-label="Close gift 3">× close</button>
+          </div>
+          <svg class="env-doodle" viewBox="0 0 30 30" aria-hidden="true">
+            <path d="M8,22 Q10,10 15,8 Q20,6 22,22" stroke="#c0392b" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <line x1="15" y1="22" x2="15" y2="26" stroke="#c0392b" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </article>
+
+        <!-- GIFT 4 -->
+        <article class="envelope-card env-accent-4" data-open="false" aria-label="Gift 4">
+          <div class="env-closed">
+            <div class="env-flap" aria-hidden="true"></div>
+            <div class="env-body">
+              <div class="env-label">
+                <span class="env-num">04</span>
+                <span class="env-hint">tap to open →</span>
+              </div>
+              <div class="env-washi" aria-hidden="true"></div>
+            </div>
+          </div>
+          <div class="env-note" aria-hidden="true">
+            <div class="note-lines" aria-hidden="true"></div>
+            <p class="note-num">— 04 —</p>
+            <h3 class="note-heading">Wishes for This Year</h3>
+            <p class="note-body">
+              <!-- PLACEHOLDER — replace with your own words -->
+              I hope this year gives you best of your life and you will get whatever you have dream for in the best way posible and that make you feel good . HAPPY BIRTHDAY MY RARUUUUUUUUUU
+            </p>
+            <button class="note-close" aria-label="Close gift 4">× close</button>
+          </div>
+          <svg class="env-doodle" viewBox="0 0 30 30" aria-hidden="true">
+            <path d="M5,20 Q7,8 15,6 Q23,4 25,20" stroke="#e8a020" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M11,6 Q15,2 19,6" stroke="#e8a020" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          </svg>
+        </article>
+
+      </div><!-- /gifts-grid -->
+    </section>
+
+    <!-- ============================================================
+         2.5  "A NOTE FOR SWARA" — lined notebook paper section
+              Each line fades in one by one as it enters the viewport.
+              Replace placeholder text with your own words.
+         ============================================================ -->
+    <section class="note-section" aria-label="A note for Swara">
+
+      <!-- Section label (matches site style) -->
+      <div class="section-label">
+        <svg viewBox="0 0 60 20" aria-hidden="true">
+          <path d="M2,14 Q14,4 26,12 Q38,2 50,14 Q54,16 58,12"
+            stroke="#c0392b" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span>a note for Swara</span>
+        <svg viewBox="0 0 60 20" aria-hidden="true">
+          <path d="M2,6 Q14,16 26,8 Q38,18 50,6 Q54,4 58,8"
+            stroke="#c0392b" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <!-- The notebook paper card -->
+      <div class="notebook" role="article" aria-label="Handwritten note">
+
+        <!-- Spiral binding holes (decorative) -->
+        <div class="nb-rings" aria-hidden="true">
+          <span class="nb-ring"></span>
+          <span class="nb-ring"></span>
+          <span class="nb-ring"></span>
+          <span class="nb-ring"></span>
+          <span class="nb-ring"></span>
+          <span class="nb-ring"></span>
+          <span class="nb-ring"></span>
+        </div>
+
+        <!-- Red margin line -->
+        <div class="nb-margin" aria-hidden="true"></div>
+
+        <!-- Notebook lines + handwritten text -->
+        <div class="nb-content">
+
+          <!-- Each .nb-line is revealed one by one on scroll -->
+          <!-- PLACEHOLDER lines — replace text between the tags -->
+
+          <p class="nb-line" data-nb-line>
+            Dear Raru,
+          </p>
+          <p class="nb-line" data-nb-line>
+            &nbsp;
+          </p>
+          <p class="nb-line" data-nb-line>
+           SOOOOOOO HAPPY BIRTHDAY MERAAAA CUTUUU BACCHA, so it's been 1 year since we know each other and almost a year loving each other in such a beautiful way baby you are whole heart my lovee tere sath ye time Kidr guzar gaya kya pata kab pura saal ho gaya nai pata chala aisa lagra ham dono ek dusre ko kitne pehle se jaante maine kabhi nai socha tha ki mai itna pyar karunga kisise aur koi mere liye itnaaa khass hogaa mera betu ji I truly love you tere sath bitayi hua har ek moment it's not just moment it's the best time I've ever had in my whole life abhi to bas ek hi saal hua hai aage aage dekho tumko me kitna pyar karega kitna apni bahon me rakhega hamesha tumko special feel karata rahega because you are special to me tumhari har ek cheez is special to mee
+          </p>
+          <p class="nb-line" data-nb-line>
+            Form the begining of our relationship to this day almost a year I get to know a lot of thing about you which i felt unreal like in the starting phase of our relationship i remember ki tu mese ghabrai hui rehti this aur to be honest mai bhi tere sath itna khula nai tha lekin tum zyada aisa dara dara rehta tha mese and mujhe waha se yaha tak leke aake bohot khushi hai ki ab tum mere sath comfortable hai pehle se bohot zyada aur ab to bauna meko hi dara ke rakhta hai mera bargandi baccha 
+          </p>
+          <p class="nb-line" data-nb-line>
+            &nbsp;
+          </p>
+          <p class="nb-line" data-nb-line>
+            JAANN tu mera babyy hai tere sath mujhe har ek lamha spend karne accha lagta hai sabkuch bohot lite lagta hai tere sath har ek lift ka moment joyful ho jaata hai duniya ki kharabar nai rehti hai bas i need you to laugh and enjoy with me your rest of your life and ill make sure your life will be best with me my dear chotu babyyyyyy 
+          </p>
+          <p class="nb-line" data-nb-line>
+            I hope this year is full of thing you want you will achive your dreams and hope you will make this new year of your life the best year and better than any other year in your life we will togerther make a lot of new memories this year till the bhuddhapa waise tum mese jaldi bhuddha hoga aur mere se jaldi ganja pan hoga hahahahahha mera takla ganja chudail chikusaa baccha i loveee youuuuuuuuuuuuuuu
+          </p>
+         
+          <p class="nb-line" data-nb-line>
+            Happy birthday to my most pyaraaaaaaa insaaannnn 
+          </p>
+          <p class="nb-line" data-nb-line>
+            &nbsp;
+          </p>
+          <p class="nb-line nb-line--sign" data-nb-line>
+            — Your Love Zyyzyyy 
+          </p>
+
+        </div><!-- /nb-content -->
+
+        <!-- Small doodle in the corner of the page -->
+        <svg class="nb-corner-doodle" viewBox="0 0 60 60" aria-hidden="true">
+          <path d="M10,50 Q20,20 50,10" stroke="#e8a020" stroke-width="1.5"
+            fill="none" stroke-linecap="round" stroke-dasharray="4 3"/>
+          <polygon points="30,8 33,16 42,16 35,21 38,30 30,25 22,30 25,21 18,16 27,16"
+            fill="none" stroke="#c0392b" stroke-width="1.2"/>
+        </svg>
+
+      </div><!-- /notebook -->
+
+    </section>
+
+    <!-- ============================================================
+         3. MEMORIES SCRAPBOOK — polaroid flip cards
+              Generated by JS from the MEMORIES array in script.js.
+              Drop photos into /memories and update that array.
+         ============================================================ -->
+    <section class="memories-section" aria-label="Memory photos">
+
+      <div class="section-label">
+        <svg viewBox="0 0 60 20" aria-hidden="true">
+          <path d="M2,10 Q12,18 22,8 Q32,18 42,8 Q52,18 58,10"
+            stroke="#c0392b" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span>some memories</span>
+        <svg viewBox="0 0 60 20" aria-hidden="true">
+          <path d="M2,10 Q12,2 22,12 Q32,2 42,12 Q52,2 58,10"
+            stroke="#c0392b" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <!-- JS renders .polaroid-wrap cards into this container -->
+      <div class="scrap-board" id="scrap-board" aria-live="polite">
+        <!-- Cards injected by initMemories() in script.js -->
+      </div>
+
+      <!-- Shown only when no photos are configured yet -->
+      <p class="scrap-empty" id="scrap-empty" hidden>
+        Drop your photos into the <code>memories/</code> folder and
+        fill in the <code>MEMORIES</code> array in <code>script.js</code>.
+      </p>
+
+    </section>
+
+    <!-- ============================================================
+         4. CAKE SECTION — drawn cake + interactive candles
+         ============================================================ -->
+    <section class="cake-section" aria-label="Birthday cake">
+      <div class="section-label">
+        <svg viewBox="0 0 60 20" aria-hidden="true">
+          <path d="M2,12 Q12,2 22,14 Q32,4 42,14 Q52,4 58,12" stroke="#e8a020" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span>make a wish!</span>
+        <svg viewBox="0 0 60 20" aria-hidden="true">
+          <path d="M2,8 Q12,18 22,6 Q32,16 42,6 Q52,16 58,8" stroke="#e8a020" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <p class="cake-hint-text">tap each candle to blow it out</p>
+
+      <!-- The whole cake is SVG-illustrated -->
+      <div class="cake-wrap">
+
+        <!-- CANDLES (HTML on top of SVG cake) -->
+        <div class="candles-row" id="candles-row" aria-label="Birthday candles">
+
+          <button class="candle" data-lit="true" aria-label="Candle 1, tap to blow out" style="--candle-color:#e8a020">
+            <span class="candle__flame" aria-hidden="true">
+              <span class="flame-core"></span>
+              <span class="flame-outer"></span>
+            </span>
+            <span class="candle__smoke" aria-hidden="true"></span>
+            <span class="candle__body" aria-hidden="true"></span>
+          </button>
+
+          <button class="candle" data-lit="true" aria-label="Candle 2, tap to blow out" style="--candle-color:#c0392b">
+            <span class="candle__flame" aria-hidden="true">
+              <span class="flame-core"></span>
+              <span class="flame-outer"></span>
+            </span>
+            <span class="candle__smoke" aria-hidden="true"></span>
+            <span class="candle__body" aria-hidden="true"></span>
+          </button>
+
+          <button class="candle candle--tall" data-lit="true" aria-label="Candle 3, tap to blow out" style="--candle-color:#3d7a5c">
+            <span class="candle__flame" aria-hidden="true">
+              <span class="flame-core"></span>
+              <span class="flame-outer"></span>
+            </span>
+            <span class="candle__smoke" aria-hidden="true"></span>
+            <span class="candle__body" aria-hidden="true"></span>
+          </button>
+
+          <button class="candle" data-lit="true" aria-label="Candle 4, tap to blow out" style="--candle-color:#c0392b">
+            <span class="candle__flame" aria-hidden="true">
+              <span class="flame-core"></span>
+              <span class="flame-outer"></span>
+            </span>
+            <span class="candle__smoke" aria-hidden="true"></span>
+            <span class="candle__body" aria-hidden="true"></span>
+          </button>
+
+          <button class="candle" data-lit="true" aria-label="Candle 5, tap to blow out" style="--candle-color:#e8a020">
+            <span class="candle__flame" aria-hidden="true">
+              <span class="flame-core"></span>
+              <span class="flame-outer"></span>
+            </span>
+            <span class="candle__smoke" aria-hidden="true"></span>
+            <span class="candle__body" aria-hidden="true"></span>
+          </button>
+
+        </div><!-- /candles-row -->
+
+        <!-- CSS/SVG illustrated cake -->
+        <div class="cake-illustration" aria-hidden="true">
+
+          <!-- Top tier -->
+          <div class="cake-tier cake-tier--top">
+            <div class="cake-icing cake-icing--top"></div>
+            <div class="cake-sponge cake-sponge--top">
+              <span class="cake-deco">✦ Swara ✦</span>
+            </div>
+          </div>
+
+          <!-- Middle tier -->
+          <div class="cake-tier cake-tier--mid">
+            <div class="cake-icing cake-icing--mid"></div>
+            <div class="cake-sponge cake-sponge--mid">
+              <span class="cake-dots" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Bottom tier -->
+          <div class="cake-tier cake-tier--bot">
+            <div class="cake-icing cake-icing--bot"></div>
+            <div class="cake-sponge cake-sponge--bot">
+              <span class="cake-squig" aria-hidden="true">
+                <svg viewBox="0 0 200 20">
+                  <path d="M0,10 Q25,2 50,10 Q75,18 100,10 Q125,2 150,10 Q175,18 200,10"
+                    stroke="rgba(255,255,255,0.4)" stroke-width="2" fill="none" stroke-linecap="round"/>
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <!-- Plate -->
+          <div class="cake-plate"></div>
+        </div>
+
+      </div><!-- /cake-wrap -->
+
+      <!-- Blow all button -->
+      <div class="cake-controls">
+        <button id="blow-all-btn" class="hand-btn">
+          💨 blow 'em all out
+        </button>
+        <button id="relight-btn" class="hand-btn hand-btn--secondary" style="display:none">
+          🕯 relight
+        </button>
+      </div>
+
+      <!-- Wish card — appears after all candles out -->
+      <div id="wish-card" class="wish-card" hidden aria-live="polite">
+        <div class="wish-tape" aria-hidden="true"></div>
+        <p class="wish-heading">✦ wish granted ✦</p>
+        <p class="wish-body">
+          <!-- PLACEHOLDER — replace with your own message -->
+          I hope whatever you wished for actually comes true this year — I'll be here cheering you and loving you.
+        </p>
+        <p class="wish-sign">— made with love, your Chikuuu</p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER — "made by me" signature
+       ============================================================ -->
+  <footer class="page-footer">
+    <!-- Washi tape strip -->
+    <div class="washi washi-footer" aria-hidden="true"></div>
+
+    <!-- Hand-drawn arrow pointing to signature -->
+    <svg class="footer-arrow" viewBox="0 0 60 40" aria-hidden="true">
+      <path d="M5,10 Q30,5 50,25" stroke="#3d241a" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-dasharray="4 3"/>
+      <path d="M44,22 L50,25 L46,30" stroke="#3d241a" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+
+    <p class="footer-sig">
+      made by zyyzyy , for raru —<br>
+      
+    </p>
+
+    <!-- Tiny wiggling doodle -->
+    <svg class="tiny-doodle" viewBox="0 0 50 50" aria-hidden="true">
+      <path d="M10,40 Q15,10 25,25 Q35,40 40,10" stroke="#e8a020" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <circle cx="10" cy="40" r="2.5" fill="#e8a020"/>
+      <circle cx="40" cy="10" r="2.5" fill="#c0392b"/>
+    </svg>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
